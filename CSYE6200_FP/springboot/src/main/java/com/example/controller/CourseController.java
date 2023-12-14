@@ -20,7 +20,10 @@ public class CourseController {
 
     @GetMapping("/selectPage")
     public Result selectPage(@RequestParam(defaultValue = "1") Integer pageNum,
-                             @RequestParam(defaultValue = "10") Integer pageSize) {
+                             @RequestParam(defaultValue = "10") Integer pageSize,
+                             @RequestParam String courseNum,
+                             @RequestParam String subject,
+                             @RequestParam String campus) {
         PageInfo<Course> coursePageInfo = courseService.selectPage(pageNum, pageSize);
         return Result.success(coursePageInfo);
     }
