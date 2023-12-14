@@ -4,13 +4,12 @@
       <div style="flex: 1">
         <div style="padding-left: 20px; display: flex; align-items: center">
           <img src="@/assets/imgs/logo.png" alt="" style="width: 40px">
-          <div style="font-weight: bold; font-size: 24px; margin-left: 5px">Student Grade Management System</div>
+          <div style="font-weight: bold; font-size: 24px; margin-left: 5px">Fitness Management System</div>
         </div>
       </div>
       <div style="width: fit-content; padding-right: 10px; display: flex; align-items: center;">
-        <img src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png" alt="" style="width: 40px; height: 40px">
-        <span style="margin-left: 5px">Administrator
-</span>
+        <img :src="user.avatar ||'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'" alt="" style="width: 40px; height: 40px;border-radius: 50%">
+        <span style="margin-left: 5px;margin-right: 30px">{{ user.username }}</span>
       </div>
     </div>
 
@@ -20,29 +19,51 @@
             router
             style="border: none"
             :default-active="$route.path"
-            :default-openeds="['/home', '2']"
+            :default-openeds="['/home', '2', '3']"
         >
           <el-menu-item index="/home">
             <el-icon><HomeFilled /></el-icon>
             <span>Homepage</span>
           </el-menu-item>
+
           <el-sub-menu index="2">
             <template #title>
               <el-icon><Memo /></el-icon>
-              <span>Course Management</span>
+              <span>Exercise Management</span>
             </template>
-            <el-menu-item index="/course">
+            <el-menu-item index="/exercise" v-if="user.role === 'ADMIN'">
               <el-icon><Document /></el-icon>
-              <span>Course Information</span>
+              <span>Exercise Information</span>
+            </el-menu-item>
+            <el-menu-item index="/exerciseList" v-if="user.role === 'USER'">
+              <el-icon><Reading /></el-icon>
+              <span>Exercise List</span>
+            </el-menu-item>
+            <el-menu-item index="/userSelected" v-if="user.role === 'USER'">
+              <el-icon><Aim /></el-icon>
+              <span>User Participated</span>
             </el-menu-item>
           </el-sub-menu>
-          <el-menu-item index="/person">
+
+          <el-sub-menu index="3" v-if="user.role === 'ADMIN'">
+            <template #title>
+              <el-icon><User /></el-icon>
+              <span>User Management</span>
+            </template>
+            <el-menu-item index="/user">
+              <el-icon><UserFilled /></el-icon>
+              <span>User Information</span>
+            </el-menu-item>
+          </el-sub-menu>
+
+          <el-menu-item index="/profile" v-if="user.role === 'USER'">
             <el-icon><User /></el-icon>
-            <span>User Profile</span>
+            <span>Profile</span>
           </el-menu-item>
+
           <el-menu-item index="login" @click="logout">
             <el-icon><SwitchButton /></el-icon>
-            <span>EXIT</span>
+            <span>Exit</span>
           </el-menu-item>
         </el-menu>
       </div>
@@ -58,10 +79,10 @@
 <script setup>
 import { useRoute } from 'vue-router'
 const $route = useRoute()
-console.log($route.path)
+const user = JSON.parse(localStorage.getItem('login-user') || '{}')
 
 const logout = () => {
-  localStorage.removeItem('student-user')
+  localStorage.removeItem('login-user')
 }
 </script>
 

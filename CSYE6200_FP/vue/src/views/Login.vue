@@ -6,25 +6,37 @@
         <el-form :model="data.form" ref="formRef" :rules="rules" class="login_form">
           <!-- username-->
           <el-form-item label="Username" prop="username">
-            <el-input prefix-icon="User" v-model="data.form.username" placeholder="Please enter username" />
+            <el-input prefix-icon="User" v-model="data.form.username" placeholder="Please enter username"/>
           </el-form-item>
           <!-- password-->
           <el-form-item label="Password" prop="password">
-            <el-input type="password" show-password prefix-icon="Lock" v-model="data.form.password"
-              placeholder="Please enter password" />
+            <el-input
+                type="password"
+                show-password prefix-icon="Lock" v-model="data.form.password"
+                placeholder="Please enter password"/>
+          </el-form-item>
+          <!-- role -->
+          <el-form-item prop="role">
+            <el-radio-group v-model="data.form.role" style="margin: 10px auto">
+              <el-radio value="USER" label="USER" size="large">User</el-radio>
+              <el-radio value="ADMIN" label="ADMIN" size="large">Admin</el-radio>
+            </el-radio-group>
           </el-form-item>
           <!-- login button-->
           <el-form-item>
-            <el-button type="primary" style="width: 100%; margin-top: 20px" @click="login">LOGIN</el-button>
+            <el-button type="primary" style="width: 100%" @click="login">LOGIN</el-button>
           </el-form-item>
           <div class="login_goSignUp">
-            Have no account? Go <a href="/register" style="color: blue;">SIGN UP</a>
+            Have no account? Go <a href="/signup" style="color: blue;">SIGN UP</a>
           </div>
         </el-form>
       </div>
+
     </div>
   </div>
 </template>
+
+
 <style scoped>
 .login_title {
   font-weight: bold;
@@ -61,32 +73,38 @@
   text-align: center;
 }
 </style>
+
+
 <script setup>
-import { reactive, ref } from "vue";
+import {reactive, ref} from "vue";
 import request from "@/utils/request";
-import { ElMessage } from "element-plus";
+import {ElMessage} from "element-plus";
 import router from "@/router";
+
 const data = reactive({
   form: {}
 })
+
 // validation rules for input area
 const rules = reactive({
   username: [
-    { required: true, message: 'Please input Username', trigger: 'blur' },
+    {required: true, message: 'Please input Username', trigger: 'blur'},
     // { min: 5, max: 12, message: 'Length should be 5 to 12', trigger: 'blur' },
   ],
   password: [
-    { required: true, message: 'Please input Password', trigger: 'blur' },
+    {required: true, message: 'Please input Password', trigger: 'blur'},
   ],
 })
+
 // form validation while click login
 const formRef = ref();
+
 const login = () => {
   formRef.value.validate((valid) => {
     if (valid) {
       request.post('/login', data.form).then(res => {
         if (res.code === '200') {
-          localStorage.setItem('student-user', JSON.stringify(res.data));
+          localStorage.setItem('login-user', JSON.stringify(res.data));
           ElMessage.success('Login Succeed!');
           router.push('/home');    // go to home page
         } else {
